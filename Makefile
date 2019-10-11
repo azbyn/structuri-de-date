@@ -6,9 +6,8 @@ default: build
 build:
 	pdflatex --shell-escape ${FILE}
 
-open:
-	evince ${NAME}.pdf&
-
 clean:
-	rm ${NAME}.aux
-	rm ${NAME}.log
+	rm -f ${NAME}.aux
+	rm -f ${NAME}.log
+	rm -f ${NAME}.toc
+	rm -f ${NAME}.out

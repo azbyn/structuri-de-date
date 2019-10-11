@@ -1,3 +1,7 @@
 *.log
 *.aux
+*.toc
+*.out
 _minted-*
+test
+a.out

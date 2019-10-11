@@ -10,6 +10,7 @@ int readSize(const char* name) {
     } while (res <= 0 || res >= MAX_SZ);
     return res;
 }
+
 void assert(bool cond, const char* msg) {
     if (!cond) throw std::logic_error(msg);
 }
@@ -45,15 +46,14 @@ struct Mat {
         }
         std::cout << "}\n";
     }
-
 private:
     enum class Type { Row, Col };
     template<Type type>
     bool isStrictlyDiagonallyDominantImpl() const {
         assert(m == n, "Matrix must be square");
         for (int i = 0; i < m; ++i) {
-            int val = std::abs(at(i, i));
-            int sum = -val;
+            double val = std::abs(at(i, i));
+            double sum = -val;
             for (int j = 0; j < m; ++j)
                 sum += std::abs(type == Type::Col ? at(j, i) : at(i, j));
             if (sum >= val) return false;

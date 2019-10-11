@@ -1,11 +1,19 @@
-%\documentclass[11pt,a4paper]{book}
-\documentclass[11pt,a4paper]{article}
+\documentclass[11pt,a4paper]{report}
 \usepackage{minted} %must be installed
 \usepackage{mathtools} % misc math 
 \usepackage{amssymb} % math symbols
 \usepackage[utf8]{inputenc}
 \usepackage{enumitem} % for [leftmargin=*]
 \usepackage{geometry} % for better controll of margins
+
+\usepackage[romanian]{babel} %romanian names
+
+\usepackage{hyperref}
+
+\usepackage{sectsty}
+\chaptertitlefont{\centering\LARGE}
+\sectionfont{\Large}
+
 
 \geometry{a4paper,left=30mm,right=20mm,top=20mm,bottom=30mm}
 
@@ -24,24 +32,57 @@
   %style=vs,
   fontsize=\large
 }
+\usepackage{xparse}
 
-
-\newenvironment{problema}[1][1]{
+\DeclareDocumentEnvironment{problema}{O {1} o}{
   \begin{enumerate}[leftmargin=*]
-    \setcounter{enumi}{#1-1}
-    \item 
+    \addtocounter{enumi}{#1}
+    \addtocounter{enumi}{-1}
+    \item
 }{
-\end{enumerate}
+  \end{enumerate}
+  \IfValueT{#2}{
+    \cppcode{#2}
+  }
 }
+
+%\newcommand{\problemaArg}{} % dummy macro
+% \DeclareDocumentEnviroment{problema}{O {1} m}{
+  % %\renewcommand{problemaArg}{HI}
+  % \begin{enumerate}[leftmargin=*]
+    % \addtocounter{enumi}{#1}
+    % \addtocounter{enumi}{-1}
+    % \item
+% }{
+% \end{enumerate}
+% #2
+% }
 
 \newcommand{\mat}[1]{\mathcal{M}_{#1}(\mathbb{R})}
 \newcommand{\matmn}{\mat{m\times{}n}}
 \newcommand{\matn}{\mat{n}}
 
+\usepackage{tocloft}
+
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+%\hypersetup{colorlinks=true, linkcolor=cyan, citecolor=green, filecolor=black,urlcolor=blue}
+
+\newcommand{\lab}[1]{
+  \section*{Laborator #1}
+  \addcontentsline{toc}{section}{Laborator #1}
+}
+\newcommand{\labtitle}[2]{
+  \chapter*{#1}
+  \addcontentsline{toc}{chapter}{#2}
+}
+
 \begin{document}
+\tableofcontents
+\pagebreak
+  \labtitle{Alocarea dinamică a memoriei.\\ Tipuri specifice.}{Alocarea dinamica a memoriei. Tipuri specifice.}
 % \maketitle
-\section*{Laborator 1}
-  \begin{problema}[16]
+\lab{1}
+  \begin{problema}[16][src/lab1_16_matrix.cpp]
     Scrieți funcții pentru implemetarea operațiilor specifice pe matrice de numere reale cu $m$ linii și $n$ coloane:
     suma, diferența și produsul al două matrice, produsul dintre o matrice și un scalar real, transpusa unei matrice, norme matriceale specifice\footnote{
       Dacă $A \in \matmn$, atunci
@@ -72,7 +113,14 @@
     Se vor folosi tablouri bidimensionale alocate static.
   
   \end{problema}
+  %\cppcode{src/lab1_16_matrix.cpp}
+\lab{2}
+  \begin{problema}[18][src/lab2_18_vector.cpp]
+  Scrieți funcții pentru implementarea operațiilor specifice pe vectori din $\mathbb{R}^n$: suma, diferența și produsul scalar al doi vectori,
+  produsul dintre un vector și un scalar real, negativarea unui vector, norma euclidiană a unui vector,
+  citirea de la tastură a celor $n$ componente ale unui vector, afișarea componentelor vectorului sub forma unui $n$-uplu de elemente.
+  Se vor folosi tablouri unidimensionale alocate dinamic.
+  \end{problema}
   
-\cppcode{src/lab1_16_matrix.cpp}
 
 \end{document}

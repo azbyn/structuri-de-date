@@ -162,12 +162,13 @@ Mat& trans(const Mat& a, Mat& res) {
 
 
 int main() {
-    Mat a = {
-        {4, -2, 1},
-        {1, -5, 2},
-        {-1, 1, 3},
+    const Mat a = {
+        {4, -2, 1, 3},
+        {1, -5, 2, 4},
+        {-1, 1, 3, 15},
         };
-    Mat b = {
+    a.print("a");
+    /*Mat b = {
 
         {4, -2, 1},
         {1, -5, 0},
@@ -182,9 +183,10 @@ int main() {
     sub(a, b, res).print("sub");
     mul(2, b, res).print("mul");
     trans(mul(a, b, res2), res).print("trans");
-
+    */
     std::cout << a.norm1() << "\n";
-    std::cout << b.norm1() << "\n";
+    std::cout << a.normInf() << "\n";
+    /*
     std::cout <<"normInf\n";
     std::cout << a.normInf() << "\n";
     std::cout << b.normInf() << "\n";
@@ -198,6 +200,6 @@ int main() {
 
     std::cout <<"iSRDD: "<< a.isStrictlyRowDiagonallyDominant() << "\n";
     std::cout <<"iSRDD :"<< b.isStrictlyRowDiagonallyDominant() << "\n";
-
+    */
     return 0;
 }
