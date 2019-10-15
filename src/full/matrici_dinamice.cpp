@@ -1,8 +1,3 @@
-// Project11.cpp : Defines the entry point for the console application.
-//
-
-#include "stdafx.h"
-
 #include <iostream>
 #include <cmath>
 #include <conio.h>
