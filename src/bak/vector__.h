@@ -1,3 +1,5 @@
+#pragma once
+
 #include "utils.h"
 
 #include <iostream>
@@ -15,10 +17,10 @@ struct Vec {
     constexpr const double* end() const { return _end; }
 
     constexpr Vec() : _begin(nullptr), _end(nullptr) {}
-    explicit Vec(size_t n) : _begin(new double[n]), _end(_begin+n) {}
+    explicit Vec(size_t n) : _begin(/*new double[n]*/nullptr) { std::cout << "n" << n << "\n"; _end = _begin + n; }
     Vec(std::initializer_list<double> list) : Vec(getSize(list)) {
         auto it = _begin;
-        for (const auto& v : list) *(it++) = v;
+        //for (const auto& v : list) *(it++) = v;
     }
     Vec(const Vec&) = delete;
     Vec(Vec&& rhs) noexcept
@@ -99,4 +101,25 @@ double norm(const Vec& a) {
 }
 double Vec::norm() const {
     return ::norm(*this);
+}
+
+int test_vec() {
+    try {
+        Vec a { 3, 4, 4, 3 };
+        Vec b { 2, 3, 1, 2 };
+        Vec res;
+        std::cout << "a:  " << a << "\n";
+        std::cout << "b:  " << b << "\n";
+        std::cout << "a+b:" << add(a, b, res) << "\n";
+        std::cout << "2*b:" << mul(2, b, res) << "\n";
+        std::cout << "-a:" << neg(a, res) << "\n";
+        std::cout << "a-b:" << sub(a, b, res) << "\n";
+        std::cout << "a-a:" << sub(a, a, res) << "\n";
+        std::cout << "<a, b>:" << dot(a, b) << "\n";
+        std::cout << "<a, a>:" << dot(a, a) << "\n";
+        std::cout << "||a||:" << norm(a) << "\n";
+    } catch (std::exception& e) {
+        std::cerr << "Error:" << e.what();
+    }
+    return 0;
 }

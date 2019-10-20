@@ -1,3 +1,4 @@
+#pragma once
 #include "utils.h"
 
 #include <iostream>
@@ -10,7 +11,6 @@ struct Vec {
     constexpr double* begin() { return _begin; }
     constexpr const double* begin() const { return _begin; }
 
-
     constexpr double* end() { return _end; }
     constexpr const double* end() const { return _end; }
 
@@ -20,12 +20,23 @@ struct Vec {
         auto it = _begin;
         for (const auto& v : list) *(it++) = v;
     }
-    Vec(const Vec&) = delete;
+    Vec(const Vec& rhs) : Vec(rhs.size()) {
+        auto it = _begin;
+        for (const auto& v : rhs) *(it++) = v;
+    }
     Vec(Vec&& rhs) noexcept
         : _begin(std::exchange(rhs._begin, nullptr)),
         _end(std::exchange(rhs._end, nullptr)) {}
 
-    Vec& operator=(const Vec&) = delete;
+    Vec& operator=(const Vec& rhs) {
+        if (size() != rhs.size()) {
+            this->~Vec();
+            new (this) Vec(rhs.size());
+        }
+        auto it = _begin;
+        for (const auto& v : rhs) *(it++) = v;
+        return *this;
+    }
     Vec& operator=(Vec&& rhs) noexcept {
         this->~Vec();
         _begin = std::exchange(rhs._begin, nullptr);

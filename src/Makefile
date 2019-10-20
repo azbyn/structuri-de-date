@@ -1,6 +1,6 @@
-FILE := lab2_18_vector.cpp
+FILE := lab3_07_*.cpp
 CXX := clang++
-CXX_FLAGS := -std=c++17 -Wall -Wextra
+CXX_FLAGS := -std=c++17 -Wall -Wextra -g
 OUT = test
 
 default: build

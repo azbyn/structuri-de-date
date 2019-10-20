@@ -1,19 +1,7 @@
+#include "utils.h"
+
 #include <iostream>
 #include <cmath>
-
-constexpr int MAX_SZ = 8;
-int readSize(const char* name) {
-    int res;
-    do {
-        std::cout << name << ": ";
-        std::cin >> res;
-    } while (res <= 0 || res >= MAX_SZ);
-    return res;
-}
-
-void assert(bool cond, const char* msg) {
-    if (!cond) throw std::logic_error(msg);
-}
 
 struct Mat {
     double data[MAX_SZ][MAX_SZ] {};

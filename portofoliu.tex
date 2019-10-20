@@ -3,6 +3,7 @@
 \usepackage{mathtools} % misc math 
 \usepackage{amssymb} % math symbols
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{enumitem} % for [leftmargin=*]
 \usepackage{geometry} % for better controll of margins
 
@@ -14,8 +15,7 @@
 \chaptertitlefont{\centering\LARGE}
 \sectionfont{\Large}
 
-
-\geometry{a4paper,left=30mm,right=20mm,top=20mm,bottom=30mm}
+\geometry{a4paper,left=25mm,right=20mm,top=20mm,bottom=30mm}
 
 \author{Pavel Andrei}
 \date{}
@@ -26,12 +26,15 @@
 %\usepackage{datatool} %for putting files and outputs
 
 %\newcommand{\code}{\}
-\newmintedfile[cppcode]{cpp} {
+\newminted[cpp]{cpp} {
   linenos,
   frame=single,
   %style=vs,
-  fontsize=\large
+  fontsize=\large,
+  escapeinside=@@
 }
+\newcommand{\cppcode}[1]{\input{cpp_latex/#1}}
+
 \usepackage{xparse}
 
 \DeclareDocumentEnvironment{problema}{O {1} o}{
@@ -56,7 +59,8 @@
 % }{
 % \end{enumerate}
 % #2
-% }
+%}
+
 
 \newcommand{\mat}[1]{\mathcal{M}_{#1}(\mathbb{R})}
 \newcommand{\matmn}{\mat{m\times{}n}}
@@ -75,11 +79,21 @@
   \chapter*{#1}
   \addcontentsline{toc}{chapter}{#2}
 }
+\newcommand{\commonFile}[2]{
+  \subsection*{\texttt{#1}}\label{#2}
+  \cppcode{src/#1}
+}
 
 \begin{document}
 \tableofcontents
 \pagebreak
-  \labtitle{Alocarea dinamică a memoriei.\\ Tipuri specifice.}{Alocarea dinamica a memoriei. Tipuri specifice.}
+
+\labtitle{Fișiere comume}{Fișiere comune}
+\commonFile{utils.h}{utilsh}
+\commonFile{matrix.h}{matrixh}
+\commonFile{vector.h}{vectorh}
+
+\labtitle{Alocarea dinamică a memoriei.\\ Tipuri specifice.}{Alocarea dinamica a memoriei. Tipuri specifice.}
 % \maketitle
 \lab{1}
   \begin{problema}[16][src/lab1_16_matrix.cpp]
@@ -120,7 +134,69 @@
   produsul dintre un vector și un scalar real, negativarea unui vector, norma euclidiană a unui vector,
   citirea de la tastură a celor $n$ componente ale unui vector, afișarea componentelor vectorului sub forma unui $n$-uplu de elemente.
   Se vor folosi tablouri unidimensionale alocate dinamic.
-  \end{problema}
-  
+\end{problema}
+
+
+\labtitle{Tablouri}{Tablouri}
+\lab{3}
+%\begin{problema}[6][src/lab3_06_punct.cpp]
+  %Definiți în C++ un nou tip de dată corespunzător noțiunilor de punct în plan,
+  %tip de dată ce va fi denumit \texttt{Punct2D}.
+  %\begin{enumerate}[label=\alph*)]
+  %\item Scrieti funcții pentru: calculul distanței dintre două astfel de puncte,
+    %citirea de pa tastatură și afișarea unei date de tip \texttt{Punct2D}
+  %\item Citiți de la tastatură $n$ date de tip \texttt{Punct2D} și, de asemenea,
+    %un punct fix $A(a, b)$. Afișați punctele cele mai apropiate și cele mai
+    %depărtate de punctul fix $A$ (alocare dimamică).
+    %\item Testați dacă toate cele $n$ puncte citie sunt egal depărtate de punctul fix $A$.
+    %\item Eliminați punctele cu abcisa sau ordonata negativă din șirul celor $n$ puncte
+      %citite de la tastatură (alocare dinamică).
+    %\item Dându-se 3 puncte distincte din plan, verificați dacă punctele sunt
+      %sau nu coliniare\footnote{
+        %Punctele $A(x_A, y_A),\ B(x_B, y_A),\ C(x_C, y_C)$ sunt coliniare
+        %$\iff \left|
+          %\begin{matrix}
+            %x_A & y_A & 1\\
+            %x_B & y_B & 1\\
+            %x_C & y_C & 1\\
+          %\end{matrix}
+        %\right| = 0$
+      %}. În cazul în care punctele sunt necoliniare, afișați centrul și
+      %raza cercului determinat în mod unic de cele 3 puncte\footnote{
+        %Dacă punctele $A(x_A, y_A),\ B(x_B, y_A),\ C(x_C, y_C)$ sunt necoliniare,
+        %cercul determinat în mod unic de acestea are raza $R = abc/(4S)$,
+        %unde $a, b, c$ sunt lungimile laturilor $\Delta\text{-ului }ABC$,
+        %iar $S$ este aria acestuia, iar centrul cercului este $O(x_O, y_O)$,
+        %cu $x_O = \left[ (x^2_A+y^2_A)(y_B-y_C) +
+          %(x^2_B + y^2_B)(y_C-y_A) +
+          %(x^2_C+y^2_C) (y_A-y_B) \right]/D $,
+        %$y_O = \left[ (x^2_A+y^2_A)(x_C-x_B) +
+          %(x^2_B + y^2_B)(x_A-x_C) +
+          %(x^2_C+y^2_C) (x_B-x_A) \right]/D $, și
+        %$D = 2[x_A(y_B - y_C) + x_B(y_C-y_A) +x_C (y_A-y_B) ] $.
+       % 
+      %}.
+  %\end{enumerate}
+  % \end{problema}
+
+\begin{problema}[7][src/lab3_07_system.cpp]
+  Folosind structurile de date \texttt{VECTOR} și \texttt{MATRICE} definite la curs și funcțiile necesare,
+  rezolvați următorul sistem algebric liniar cu $n$ ecuații și $n$ necunoscute folosind metoda lui Gauß de eliminare.
+
+  \begin{equation*}
+    \left\{
+    \begin{aligned}
+      2x_1 - x_2 &= 1\\
+      -x_1 + 2x_2 - x_3 &= 1\\
+      -x_2 + 2x_3 - x_4 &= 1\\
+      \cdots\cdots\cdots\cdots &\\
+      -x_{n-2} + 2x_{n-1}-x_n &= 1\\
+      -x_{n-1} + 2x_n &= 1, \hspace{0.5cm} n \in \mathbb{N}, 2 \leq n \leq 50
+    \end{aligned}.
+  \right.
+  \end{equation*}
+\end{problema}
+
+
 
 \end{document}

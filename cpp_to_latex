@@ -1,0 +1,7 @@
+#!/usr/bin/env perl
+print("\\begin{cpp}\n");
+while (<>) {
+    s/#include\s*"(\w+)\.?(\w*)"/#include "@\\nameref{$1$2}@"/g;
+    print;
+}
+print("\\end{cpp}\n");
