@@ -38,11 +38,12 @@ inline size_t readSize(const char* name, int a = 1, int b = MAX_SZ) {
     return res;
 }
 
+
 inline void assert(bool cond, const char* msg) {
     if (!cond) throw std::logic_error(msg);
 }
 template<typename T>
-static T read(const char* name) {
+inline T read(const char* name) {
     T res;
     std::cout << name << ": ";
     std::cin >> res;
