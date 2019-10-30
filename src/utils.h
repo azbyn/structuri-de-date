@@ -34,7 +34,7 @@ inline size_t readSize(const char* name, int a = 1, int b = MAX_SZ) {
     do {
         std::cout << name << ": ";
         std::cin >> res;
-    } while (res < a || res >= b);
+    } while (res < a || res > b);
     return res;
 }
 

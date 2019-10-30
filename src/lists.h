@@ -11,9 +11,21 @@ struct Stack {
     Stack& operator=(const Stack&) = delete;
     Node* top;
     Stack(Node* top = nullptr) : top(top) {}
+    ~Stack() {
+        while (top) {
+            Node* n = top;
+            top = top->next;
+            delete n;
+        }
+    }
     void push(T val) {
         Node *n = new Node{ val, top };
         top = n;
+    }
+    void quickPop() {
+        Node* n = top;
+        top = top->next;
+        delete n;
     }
     T pop() {
         assert(top, "Empty stack");
@@ -48,6 +60,13 @@ struct Queue {
     Queue(Node* top = nullptr, Node* bot = nullptr) : top(top), bot(bot) {}
     Queue(const Queue&) = delete;
     Queue& operator=(const Queue&) = delete;
+    ~Queue() {
+        while (top) {
+            Node* n = top;
+            top = top->next;
+            delete n;
+        }
+    }
     void push(T val) {
         Node *n = new Node{ val, nullptr };
         if (bot == nullptr) {
@@ -58,6 +77,7 @@ struct Queue {
         }
         bot = n;
     }
+
     T pop() {
         assert(top, "Empty queue");
         Node* old = top;
