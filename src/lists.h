@@ -58,6 +58,7 @@ struct Queue {
     Node* top;
     Node* bot;
     Queue(Node* top = nullptr, Node* bot = nullptr) : top(top), bot(bot) {}
+    /*
     Queue(const Queue&) = delete;
     Queue& operator=(const Queue&) = delete;
     ~Queue() {
@@ -66,7 +67,7 @@ struct Queue {
             top = top->next;
             delete n;
         }
-    }
+        }*/
     void push(T val) {
         Node *n = new Node{ val, nullptr };
         if (bot == nullptr) {
@@ -91,13 +92,14 @@ struct Queue {
     bool empty() const { return top == nullptr; }
     static Queue read(const char* msg) {
         Queue q;
-        int len1 = readSize(msg);
+        std::cout << msg  << ":\n";
+        int len1 = readSize("n");
         for (int i = 0; i < len1; ++i) {
             T s;
             std::cin >> s;
             q.push(s);
         }
-        return q;
+        return std::move(q);
     }
 
     friend std::ostream& operator<<(std::ostream& s, const Queue& st) {
