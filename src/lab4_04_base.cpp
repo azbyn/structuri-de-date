@@ -1,5 +1,5 @@
 #include "utils.h"
-#include "lists.h"
+#include "stack.h"
 
 #include <array>
 #include <chrono>

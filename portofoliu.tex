@@ -97,7 +97,9 @@
 \commonFile{utils.h}{utilsh}
 \commonFile{matrix.h}{matrixh}
 \commonFile{vector.h}{vectorh}
-\commonFile{lists.h}{listsh}
+\commonFile{stack.h}{stackh}
+\commonFile{queue.h}{queueh}
+\commonFile{list.h}{listh}
 
 \labtitle{Alocarea dinamică a memoriei.\\ Tipuri specifice.}{Alocarea dinamica a memoriei. Tipuri specifice.}
 % \maketitle
@@ -209,6 +211,22 @@
   și se încarcă în două stive: o stivă va conține doar litere mici, iar cealaltă doar litere mari.
   Se citește de la tastatură o vocală a alfabetului englez (literă mare sau mică).
   Ștergeți stiva corespunzătore până la întâlnirea vocalei citite. 
+\end{problema}
+
+\lab{5}
+\begin{problema}[11][src/lab5_11_numere.cpp]
+  Creați o listă liniară simplu înlănțuită în nodurile căreia sunt memorate numere naturale.
+  Sepratați numerele naturale memorate în listă, în două liste, una corespunzătore numerelor pare
+  și cealaltă, numerelor impare. Afișați cele două liste. Ștergeți din lista numerelor pare,
+  o valoare pară $x$, citită de la tastatură, ori de câte ori aprare în listă.
+\end{problema}
+
+\begin{problema}[17][src/lab5_17_stoc.cpp]
+  Modelați printr-o LLSI un stoc de produse caracterizate prin: denumire, unitate de măsură, cantitate
+  și preț unitar. Implementați principalele operații pe stoc: crearea stocului,
+  introducerea unui produse nou, eliminarea unui produs in cazul în care acesta a fost vândut în întregime,
+  modificare informații despre un produs (de exemplu, modificarea cantitații unui produs, în cazul vânzării),
+  calculul valorii stocului la un moment dat, listare stoc.
 \end{problema}
 
 \end{document}
