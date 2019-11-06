@@ -58,7 +58,7 @@ bool resupply(Stock& s, IH& ih) {
     ih.readName(name, "name");
     ih.readFP(quantity, "quantity");
     
-    s.sell(name, quantity);
+    s.resupply(name, quantity);
     return true;
 }
 
@@ -68,15 +68,10 @@ bool value(Stock& s, IH&) {
 }
 bool init(Stock& s, IH& ih) {
     std::string str;
-    //std::getline(std::cin, str);
-    char c;
     for (;;) {
         ih.getLine("+ ");
-        //std::cout << "+ ";
         add(s, ih);
         ih.getLine("Add more products (y/N)? ");
-        //std::cout << "Add more products (y/N)? ";
-        //std::cin >> c;
         if (tolower(ih.readChar()) != 'y') break;
     }
     return true;
@@ -99,6 +94,7 @@ void printHelp() {
         cmds[i].print();
 }
 bool eval(Stock& stock, MultiInputHelper& ih) {
+    ih.getLine("> ");
     auto s = ih.readStringView("> ");
     if (s.size() == 1) {
         for (size_t i = 0; i < (sizeof(cmds) / sizeof(cmds[0])); ++i) {
@@ -111,15 +107,14 @@ bool eval(Stock& stock, MultiInputHelper& ih) {
     }
     std::cout << "Invalid command!\n";
     printHelp();
-    ih.getLineAfterInvalid("> ");
-
+    std::cout << "!";
     return true;
 }
 
 int main() {
     Stock stock;
     printHelp();
-    MultiInputHelper ih("> ");
+    MultiInputHelper ih;
     for (;;) {
         if (!eval(stock, ih)) break;
     }

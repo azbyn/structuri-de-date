@@ -8,9 +8,7 @@ public:
     const char* p;
 
 public:
-    MultiInputHelper(std::string_view msg = "") {
-        getLine(msg);
-    }
+    MultiInputHelper() {}
     void getLine(std::string_view msg = "") {
         if (msg!=""){
             std::cout << msg;

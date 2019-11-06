@@ -53,7 +53,7 @@ struct Stock {
         if (res == nullptr){
             std::cout << "Product '" << name << "' not found.\n";
             return false;
-        } //TODO: THIS THROWS
+        }
         res->val.quantity += quantity;
         return true;
     }
@@ -135,7 +135,6 @@ private:
             std::cout << " |\n";
         }
         void printHeader() const {
-            std::cout << "\n";
             printLine();
             std::cout << "| ";
             printCentered(longest.name, fields[0]);
