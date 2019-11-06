@@ -1,3 +1,4 @@
+#pragma once
 #include "utils.h"
 
 #include <type_traits>
@@ -12,12 +13,27 @@ struct List {
         T val;
         Node* next;
     };
+    struct It {
+        const Node* n;
+        constexpr It(const Node* n) : n(n) {}
+        constexpr It& operator++() {
+            n = n->next;
+            return *this;
+        }
+        constexpr auto& operator*() { return n->val; }
+        constexpr bool operator ==(const It& rhs) { return n == rhs.n; }
+        constexpr bool operator !=(const It& rhs) { return n != rhs.n; }
+    };
     Node* top;
     Node* bot;
     constexpr List(Node* top = nullptr, Node* bot = nullptr)
         : top(top), bot(bot) {}
     List(const List&) = delete;
     List& operator=(const List&) = delete;
+
+    constexpr It begin() const { return top; }
+    constexpr It end() const { return nullptr; }
+
     ~List() {
         while (top) {
             Node* n = top;
@@ -141,6 +157,16 @@ struct List {
                 it = it->next;
             }
         }
+    }
+    // P is a predicate on T
+    template<typename P>
+    Node* find(P p) {
+        auto n = top;
+        for (; n; n = n->next) {
+            if (p(n->val))
+                return n;
+        }
+        return n;
     }
 };
 
