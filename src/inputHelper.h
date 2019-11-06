@@ -1,4 +1,5 @@
 #pragma once
+#include "fixedPoint.h"
 #include <iostream>
 
 class MultiInputHelper {
@@ -91,6 +92,7 @@ public:
             p = str;
         }
     }
+
 private:
     void eatWhiteSpace(std::string_view message) {
         for (;;) {

@@ -1,12 +1,10 @@
 #pragma once
-#include "fixed_point.h"
+#include "fixedPoint.h"
 #include "list.h"
 
 #include <iostream>
 #include <iomanip>
 
-// In economics they consider the year to be 360 days (at least in the french system)
-// so I'm sure they won't mind having everything truncated to 2 digits
 constexpr size_t precision = 2;
 using FP = FixedPoint<precision>;
 
@@ -33,14 +31,15 @@ struct Stock {
             [&] (Product& other) { return other.name == p.name; });
         if (res != nullptr) {
             auto& v = res->val;
-            std::cout << "Product '"<< p.name << "' already exists. Resuplying\n";
-            if (v.unit == p.unit) {
+            std::cout << "Product '"<< p.name << "' already exists.\n"
+                "Resuplying.\n";
+            if (v.unit != p.unit) {
                 std::cout << "Units did not match ('"
                           << v.unit <<"' != '" <<p.unit << "')\n";
                 return false;
             }
-            v.unitPrice += (v.quantity*v.unitPrice + p.quantity*p.unitPrice) /
-                (v.quantity +p.quantity);
+            v.unitPrice += (v.quantity*v.unitPrice + p.quantity*p.unitPrice)
+                / (v.quantity +p.quantity);
             v.quantity += p.quantity;
         } else {
             products.push_front(p);
@@ -54,7 +53,7 @@ struct Stock {
         if (res == nullptr){
             std::cout << "Product '" << name << "' not found.\n";
             return false;
-        }
+        } //TODO: THIS THROWS
         res->val.quantity += quantity;
         return true;
     }
@@ -119,7 +118,7 @@ private:
                 setMax(l.totalPrice, p.totalPrice().textLen());
             }
 
-            longest.quantity = std::max(fields[1].size() - longest.unit - 1,
+            longest.quantity = std::max(fields[1].size() - longest.unit -1,
                                         longest.quantity);
         }
         void printProd(const Product& p) const {

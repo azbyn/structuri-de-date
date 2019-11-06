@@ -1,6 +1,6 @@
-#include "lab5_17_stoc.h"
+#include "stock.h"
 
-#include "input_helper.h"
+#include "inputHelper.h"
 #include "utils.h"
 #include "list.h"
 
@@ -85,9 +85,9 @@ constexpr Command cmds[] = {
     { 'H', "help", "", printHelp, "Show help" },
     { 'A', "add", "name quantity unit price", add, "Add product" },
     { 'I', "init", "", init, "Add multiple elements" },
-    { 'S', "sell", "name quantity", printHelp, "Sell product" },
-    { 'R', "resupply", "name quantity", printHelp, "Resupply product" },
-    { 'V', "value", "", printHelp, "Print stock total value" },
+    { 'S', "sell", "name quantity", sell, "Sell product" },
+    { 'R', "resupply", "name quantity", resupply, "Resupply product" },
+    { 'V', "value", "", value, "Print stock total value" },
     { 'P', "print", "", print, "Print a table of products" },
     { 'Q', "quit", "", quit, "Quit the program" },
 };
@@ -102,7 +102,8 @@ bool eval(Stock& stock, MultiInputHelper& ih) {
     auto s = ih.readStringView("> ");
     if (s.size() == 1) {
         for (size_t i = 0; i < (sizeof(cmds) / sizeof(cmds[0])); ++i) {
-            if (cmds[i].shortName == toupper(s[0])) return cmds[i].f(stock, ih);
+            if (cmds[i].shortName == toupper(s[0]))
+                return cmds[i].f(stock, ih);
         }
     }
     for (size_t i = 0; i < (sizeof(cmds) /sizeof(cmds[0])); ++i) {
@@ -110,18 +111,16 @@ bool eval(Stock& stock, MultiInputHelper& ih) {
     }
     std::cout << "Invalid command!\n";
     printHelp();
+    ih.getLineAfterInvalid("> ");
 
     return true;
 }
 
 int main() {
-    FP::test();
     Stock stock;
     printHelp();
     MultiInputHelper ih("> ");
     for (;;) {
-        //std::cout << "> ";
-        //std::cin >> s;
         if (!eval(stock, ih)) break;
     }
     return 0;

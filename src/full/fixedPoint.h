@@ -118,10 +118,12 @@ public:
         }
         return len;
     }
+    static constexpr auto isDigit(char c) {
+        return c >= '0' && c <= '9';
+    }
     // if the return value is nullptr it means we didn't read anything good
     //else we return a pointer to the end of the read FixedPoint
     static constexpr const char* fromString(const char* str, FP& res) {
-        constexpr auto isDigit = [] (char c) { return c >= '0' && c <= '9'; };
         long sign = 1;
         if (*str == '+') ++str;
         else if (*str == '-') { ++str; sign = -1; }
