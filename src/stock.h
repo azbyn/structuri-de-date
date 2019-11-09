@@ -25,7 +25,7 @@ struct Product {
 struct Stock {
     List<Product> products;
 
-    //retun value: was the operation was successful
+    //return value: was the operation was successful
     bool add(Product p) {
         auto* res = products.find(
             [&] (Product& other) { return other.name == p.name; });
@@ -38,7 +38,7 @@ struct Stock {
                           << v.unit <<"' != '" <<p.unit << "')\n";
                 return false;
             }
-            v.unitPrice += (v.quantity*v.unitPrice + p.quantity*p.unitPrice)
+            v.unitPrice +=(v.quantity*v.unitPrice + p.quantity*p.unitPrice)
                 / (v.quantity +p.quantity);
             v.quantity += p.quantity;
         } else {
