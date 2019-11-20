@@ -1,4 +1,4 @@
-FILE := lab5_17_*.cpp
+FILE := lab6_05_*.cpp
 CXX := clang++
 CXX_FLAGS := -std=c++17 -Wall -Wextra -g
 OUT = test

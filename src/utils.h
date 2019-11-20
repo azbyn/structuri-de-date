@@ -49,3 +49,15 @@ inline T read(const char* name) {
     std::cin >> res;
     return res;
 }
+
+template<typename It>
+constexpr auto average(It begin, It end) {
+    std::remove_const_t<std::remove_reference_t<decltype(*begin)>> sum {};
+    size_t count = 0;
+    while (begin != end) {
+        sum += *begin;
+        ++begin;
+        ++count;
+    }
+    return sum /count;
+}
