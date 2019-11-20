@@ -189,5 +189,17 @@ struct DoubleList {
         }
         return n;
     }
+    void insert(Node* n, T val) {
+        if (n == bot) { push_back(val); return; }
+        Node* newN = new Node{ val, n->next, n};
+        n->next->prev = newN;
+        n->next = newN;
+    }
+    size_t size() const {
+        auto it = top;
+        size_t res = 0;
+        while (it) { it = it->next; ++res; }
+        return res;
+    }
 };
 
