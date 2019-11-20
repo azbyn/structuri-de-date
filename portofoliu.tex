@@ -77,8 +77,8 @@
 %\hypersetup{colorlinks=true, linkcolor=cyan, citecolor=green, filecolor=black,urlcolor=blue}
 
 \newcommand{\lab}[1]{
-  \section*{Laborator #1}
-  \addcontentsline{toc}{section}{Laborator #1}
+  %\section*{Laborator #1}
+  %\addcontentsline{toc}{section}{Laborator #1}
 }
 \newcommand{\labtitle}[2]{
   \chapter*{#1}
@@ -100,6 +100,7 @@
 \commonFile{stack.h}{stackh}
 \commonFile{queue.h}{queueh}
 \commonFile{list.h}{listh}
+\commonFile{doubleList.h}{doubleListh}
 
 \labtitle{Alocarea dinamică a memoriei.\\ Tipuri specifice.}{Alocarea dinamica a memoriei. Tipuri specifice.}
 % \maketitle
@@ -151,7 +152,7 @@
   %Definiți în C++ un nou tip de dată corespunzător noțiunilor de punct în plan,
   %tip de dată ce va fi denumit \texttt{Punct2D}.
   %\begin{enumerate}[label=\alph*)]
-  %\item Scrieti funcții pentru: calculul distanței dintre două astfel de puncte,
+  %\item Scrieți funcții pentru: calculul distanței dintre două astfel de puncte,
     %citirea de pa tastatură și afișarea unei date de tip \texttt{Punct2D}
   %\item Citiți de la tastatură $n$ date de tip \texttt{Punct2D} și, de asemenea,
     %un punct fix $A(a, b)$. Afișați punctele cele mai apropiate și cele mai
@@ -230,11 +231,34 @@
 \end{problema}
 
 \commonFile{stock.h}{stockh}
-
 \subsection*{\texttt{stock.cpp}}
 \cppcode{src/lab5_17_stoc.cpp}
 
 \commonFile{fixedPoint.h}{fixedPointh}
 \commonFile{inputHelper.h}{inputHelperh}
+
+\labtitle{Liste liniare dublu înlănțuite}{Liste liniare dublu înlănțuite}
+\lab{6}
+
+\begin{problema}[4][src/lab6_04_studenti.cpp]
+  Creați o LLDI care să memoreze următoarele informații despre studenții unei grupe:
+  numele, prenumele și trei note (reprezentate prin numere reale de la 1 la 10).
+  Afișați numele, prenumele și media fiecărui student.
+  Scrieți o funcție care calculează și returnează media grupei.
+\end{problema}
+
+
+\begin{problema}[5][src/lab6_05_misc.cpp]
+  Creați o LLDI care să memoreze numere întregi citite de la tastatură.
+  \begin{itemize}[leftmargin=.5cm]
+  \item[(a)] Scrieți o funcție care primește ca parametru adresa primului nod al listei și
+    o afișează în ambele sensuri.
+  \item[(b)] Scrieți o funcție care primește ca parametru adresa \texttt{p} a unui nod al listei și
+    un număr întreg \texttt{x} și adaugă după nodul indicat de \texttt{p}, un nod cu informația utilă \texttt{x}.
+  \item[(c)] Scrieți o funcție care primește ca parametru adresa \texttt{p} a unui nod și șterge nodul
+    indicat de \texttt{p}.
+  \end{itemize}
+\end{problema}
+
 
 \end{document}

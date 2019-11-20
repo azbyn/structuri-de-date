@@ -14,6 +14,9 @@ default: build
 build: build_cpp
 	pdflatex --shell-escape ${FILE}
 
+mount:
+	mount -t tmpfs -o size=5m tmpfs ./cpp_latex
+
 build_cpp: $(LATEX_FILES)
 
 $(CPP_BUILD)/%.cpp.tex: %.cpp
