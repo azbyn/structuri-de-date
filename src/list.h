@@ -1,5 +1,6 @@
 #pragma once
 #include "utils.h"
+#include "ptrRange.h"
 
 #include <type_traits>
 #include <utility>
@@ -33,6 +34,30 @@ struct List {
 
     constexpr It begin() const { return top; }
     constexpr It end() const { return nullptr; }
+
+    constexpr const T& front() const { return top->val; }
+    constexpr T& front() { return top->val; }
+    constexpr size_t size() const {
+        size_t sz = 0;
+        Node* n = top;
+
+        while (n) {
+            ++sz;
+            n = n->next;
+        }
+        return sz;
+    }
+
+    constexpr void copyTo(T* ptr) const {
+        for (auto v : *this) {
+            *(ptr++) = v;
+        }
+    }
+    ManagedPtrRange<T> toManagedPtrRange() const {
+        auto res = ManagedPtrRange<T>(size());
+        copyToMemory(res.first);
+        return res;
+    }
 
     ~List() {
         while (top) {
@@ -76,6 +101,25 @@ struct List {
         }
         bot = n;
     }
+
+    template <typename... Args>
+    void emplace_front(Args&&... args) {
+        Node *n = new Node{ T(std::forward<Args>(args)...), top };
+        top = n;
+    }
+    template <typename... Args>
+    void emplace_back(Args&&... args) {
+        Node *n = new Node{ T(std::forward<Args>(args)...), nullptr };
+        if (top == nullptr) {
+            top = n;
+        }
+        else {
+            bot->next = n;
+
+        }
+        bot = n;
+    }
+
     bool empty() const { return top == nullptr; }
 
     bool operator== (const List& rhs) {
@@ -167,6 +211,23 @@ struct List {
                 return n;
         }
         return n;
+    }
+
+    template<typename P>
+    const Node* find(P p) const {
+        auto n = top;
+        for (; n; n = n->next) {
+            if (p(n->val))
+                return n;
+        }
+        return n;
+    }
+
+    Node* findElem(T& e) {
+        return find([&](T& other) { return other == e; });
+    }
+    const Node* findElem(T& e) const {
+        return find([&](T& other) { return other == e; });
     }
 };
 

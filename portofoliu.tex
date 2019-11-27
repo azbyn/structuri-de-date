@@ -34,6 +34,7 @@
 \newminted[cpp]{cpp} {
   linenos,
   frame=single,
+  %breaklines,
   %style=vs,
   fontsize=\large,
   escapeinside=@@
@@ -85,7 +86,9 @@
   \addcontentsline{toc}{chapter}{#2}
 }
 \newcommand{\commonFile}[2]{
-  \subsection*{\texttt{#1}}\label{#2}
+  \subsection*{\texttt{#1}}
+  \label{#2}
+  \addcontentsline{toc}{section}{#1}
   \cppcode{src/#1}
 }
 
@@ -101,6 +104,8 @@
 \commonFile{queue.h}{queueh}
 \commonFile{list.h}{listh}
 \commonFile{doubleList.h}{doubleListh}
+\commonFile{graphEdgeList.h}{graphEdgeListh}
+\commonFile{graphAdjacencyList.h}{graphAdjacencyListh}
 
 \labtitle{Alocarea dinamică a memoriei.\\ Tipuri specifice.}{Alocarea dinamica a memoriei. Tipuri specifice.}
 % \maketitle
@@ -260,5 +265,19 @@
   \end{itemize}
 \end{problema}
 
+\labtitle{Grafuri neorientate}{Grafuri neorientate}
+\lab{7}
+\begin{problema}[7][src/lab7_07_edgeList.cpp]
+  Reprezentați în memorie un graf neorientat folosind lista muchiilor.
+\end{problema}
+
+\begin{problema}[8][src/lab7_08_elem.cpp]
+  Afișați toate lanțurile elementare dintr-un graf dat.
+\end{problema}
+
+\begin{problema}[9][src/lab7_09_euler.cpp]
+  Se consideră un graf neorientat fără vârfuri izolate. Determinați dacă graful
+  este eulerian și, în caz afirmativm afișați un ciclu eulerian.
+\end{problema}
 
 \end{document}
