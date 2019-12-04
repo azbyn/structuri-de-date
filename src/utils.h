@@ -1,6 +1,7 @@
 #pragma once
 #include <initializer_list>
 #include <iostream>
+#include <fstream>
 
 constexpr size_t getSize(std::initializer_list<double> l) {
     size_t n = 0;
@@ -60,4 +61,11 @@ constexpr auto average(It begin, It end) {
         ++count;
     }
     return sum /count;
+}
+size_t fileLineCount(std::ifstream& f) {
+    size_t count = 0;
+    while (!f.eof()) {
+        if (auto c = f.get(); c == '\n') ++count;
+    }
+    return count;
 }

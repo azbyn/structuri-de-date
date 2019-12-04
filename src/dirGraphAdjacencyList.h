@@ -10,7 +10,7 @@
 #include <alloca.h>
 
 
-struct Graph_AdjacencyList {
+struct DirGraph_AdjacencyList {
     using Vertex = unsigned;
 private:
 
@@ -18,8 +18,8 @@ private:
     Vertex* adjacencyData;
 
     size_t vertSize;
-    size_t edgeSize;
-    using Graph = Graph_AdjacencyList;
+    size_t arcSize;
+    using Graph = DirGraph_AdjacencyList;
 public:
     struct Iterator {
         Vertex** p;
@@ -47,37 +47,37 @@ public:
         return *(begin() + v);
     }
     size_t vertCount() const { return vertSize; }
-    size_t edgeCount() const { return edgeSize; }
+    size_t arcCount() const { return arcSize; }
 
 private:
-    Graph_AdjacencyList(Vertex** adjacencyList, Vertex* adjacencyData,
+    DirGraph_AdjacencyList(Vertex** adjacencyList, Vertex* adjacencyData,
                         size_t vertSize, size_t edgeSize)
         : adjacencyList(adjacencyList), adjacencyData(adjacencyData),
-          vertSize(vertSize), edgeSize(edgeSize) {
-        adjacencyData = new Vertex[edgeSize*2];
+          vertSize(vertSize), arcSize(edgeSize) {
+        adjacencyData = new Vertex[edgeSize];
     }
 public:
-    Graph_AdjacencyList(const Graph&) = delete;
-    Graph_AdjacencyList(Graph&& rhs)
+    DirGraph_AdjacencyList(const Graph&) = delete;
+    DirGraph_AdjacencyList(Graph&& rhs)
         : adjacencyList(std::exchange(rhs.adjacencyList, nullptr)),
           adjacencyData(std::exchange(rhs.adjacencyData, nullptr)),
-          vertSize(rhs.vertSize), edgeSize(rhs.edgeSize) {}
+          vertSize(rhs.vertSize), arcSize(rhs.arcSize) {}
     Graph& operator=(const Graph&) = delete;
     Graph& operator=(Graph&& rhs) {
-        this->~Graph_AdjacencyList();
+        this->~DirGraph_AdjacencyList();
         vertSize = rhs.vertSize;
-        edgeSize = rhs.edgeSize;
+        arcSize = rhs.arcSize;
         adjacencyList = std::exchange(rhs.adjacencyList, nullptr);
         adjacencyData = std::exchange(rhs.adjacencyData, nullptr);
         return *this;
     }
-    ~Graph_AdjacencyList() {
+    ~DirGraph_AdjacencyList() {
         delete[] adjacencyData;
         delete[] adjacencyList;
     }
 
     template <typename Path>
-    static Graph_AdjacencyList fromFile(Path path) {
+    static Graph fromFile(Path path) {
         std::ifstream f(path);
         size_t vertSize = 0;
         f >> vertSize;
@@ -88,17 +88,15 @@ public:
                                 vertSize);
         for (auto& it:counts) it = 0;
 
-        size_t edgeSize = 0;
+        size_t arcSize = 0;
         Vertex v, w;
         while (f >> v >> w) {
-            ++edgeSize;
+            ++arcSize;
             // std::cout << "L" << v << " " << w << "\n";
-
             ++counts[v];
-            ++counts[w];
         }
 
-        std::cout << "edgeSize: " << edgeSize << "\n";
+        std::cout << "arcSize: " << arcSize << "\n";
         // std::cout << "counts: " << counts << "\n";
         Vertex** list = new Vertex*[vertSize+1];
 
@@ -110,12 +108,12 @@ public:
 
         PtrRange<Vertex*> countsPtr((Vertex**) counts.begin(),
                                     (Vertex**) counts.end());
-        Vertex* data = new Vertex[edgeSize*2];
+        Vertex* data = new Vertex[arcSize*2];
         for (size_t i = vertSize-1; i >  0; --i) {
             countsPtr[i] = list[i] = data + counts[i-1];
         }
         countsPtr[0] = list[0] = data;
-        list[vertSize] = data+(edgeSize*2);
+        list[vertSize] = data+(arcSize);
 
         //std::cout << "thing: " << countsPtr << "\n";
 
@@ -125,19 +123,19 @@ public:
         Vertex a, b;
         while (f>> a>> b) {
             *(countsPtr[a]++) = b;
-            *(countsPtr[b]++) = a;
         }
-        return Graph_AdjacencyList(list, data, vertSize, edgeSize);
+        return Graph(list, data, vertSize, arcSize);
     }
 
     friend std::ostream& operator<<(std::ostream& s,
-                                    const Graph_AdjacencyList& g) {
+                                    const Graph& g) {
         for (size_t i = 0; i < g.vertSize; ++i) {
             s <<  "["<< i << "] = " << g[i] << "\n";
         }
         return s;
     }
-    constexpr bool hasEdge(Vertex a, Vertex b) const {
+    /*
+    constexpr bool hasArc(Vertex a, Vertex b) const {
         return (*this)[a].contains(b);
-    }
+    }*/
 };
