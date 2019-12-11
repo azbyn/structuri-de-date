@@ -108,8 +108,10 @@
 \commonFile{doubleList.h}{doubleListh}
 \commonFile{graphEdgeList.h}{graphEdgeListh}
 \commonFile{graphAdjacencyList.h}{graphAdjacencyListh}
+\commonFile{ptrRange.h}{ptrRangeh}
 \commonFile{dirGraphMat.h}{dirGraphMath}
 \commonFile{dirGraphAdjacencyList.h}{dirGraphAdjacencyListh}
+\commonFile{weightedDirGraphMat.h}{weightedDirGraphMath}
 
 \labtitle{Alocarea dinamică a memoriei.\\ Tipuri specifice.}{Alocarea dinamica a memoriei. Tipuri specifice.}
 % \maketitle
@@ -314,6 +316,19 @@
     (2) edge node {} (6);
 \end{tikzpicture}
 \end{figure}
+\end{problema}
+
+\labtitle{Parcurgerea grafurilor. Grafuri ponderate\\ Drumuri de cost minim}{Parcurgerea grafurilor. Grafuri ponderate. Drumuri de cost minim}
+\lab{9}
+\begin{problema}[4][src/lab9_cityGraph.cpp]
+  Presupunem că dispunem de o hartă cu $n$ orașe. Unele dintre acestea sunt unite prin șosele, acestea putând fi sau nu cu sens unic.
+  Pentru fiecare șosea ce unește două orașe se cunoaște lungimea în kilometri.
+  \begin{enumerate}
+  \item[(a)] Un turist se află într-un oraș $s$ și vrea să ajungă cu mașina în orașul $f$.
+    Se cere să se afle traseul de lungime minimă dintre cele două orașe.
+  \item[(b)] Care sunt traseele de lungime minimă între $s$ și toate celelalte orașe?
+  \item[(c)] Se cer traseele de lungime minimă între oricare două orașe de pe hartă.
+  \end{enumerate}
 \end{problema}
 
 
