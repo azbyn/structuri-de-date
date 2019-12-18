@@ -12,6 +12,8 @@ struct PtrRange {
 
     constexpr PtrRange(T* first, size_t sz)
         : first(first), last(first+sz){}
+
+    PtrRange(std::nullptr_t) : first(nullptr), last(nullptr) {}
     constexpr T* begin() { return first; }
     constexpr T* end() { return last; }
 
@@ -23,15 +25,19 @@ struct PtrRange {
     constexpr const T& front() const { return *first; }
     constexpr const T& back() const { return *(last-1); }
 
+    constexpr operator bool() {
+        return first != nullptr;
+    }
 
     friend std::ostream& operator<<(std::ostream& s, PtrRange v) {
         s << "(";
-        T* it = v.first;
-        for (T* end = v.last - 1; it < end; ++it)
-            s << *it << ", ";
+        if (v.first != nullptr) {
+            T* it = v.first;
+            for (T* end = v.last - 1; it < end; ++it)
+                s << *it << ", ";
 
-        if (it < v.last) s << *it;
-
+            if (it < v.last) s << *it;
+        }
         return s << ")";
     }
     constexpr const T& operator[](size_t i) const { return first[i]; }
@@ -92,17 +98,23 @@ struct PtrRange {
 
 template<typename T>
 struct ManagedPtrRange : public PtrRange<T> {
-    ManagedPtrRange(size_t sz)
+    explicit ManagedPtrRange(size_t sz)
         : PtrRange<T>(new T[sz], sz) {}
 
+    ManagedPtrRange(std::nullptr_t n) : PtrRange<T>(n){}
+    ManagedPtrRange(std::initializer_list<T> l) : ManagedPtrRange(getSize(l)) {
+        T* it = this->first;
+        for (auto& v: l) *it++ = v;
+    }
     ManagedPtrRange(const ManagedPtrRange&) = delete;
     ManagedPtrRange(ManagedPtrRange&& rhs)
         : PtrRange<T>(std::exchange(rhs.first, nullptr),
                       std::exchange(rhs.last, nullptr)) {}
+
     ManagedPtrRange& operator=(const ManagedPtrRange&) = delete;
     ManagedPtrRange& operator=(ManagedPtrRange&& rhs) {
         this->~ManagedPtrRange();
-        this->first = std::exchange(rhs.fist, nullptr);
+        this->first = std::exchange(rhs.first, nullptr);
         this->last = std::exchange(rhs.last, nullptr);
         return *this;
     }
@@ -187,27 +199,48 @@ struct ManagedMatrixPtrRange : public MatrixPtrRange<T> {
     ~ManagedMatrixPtrRange() { delete[] this->first; }
 };
 
-//template<typename T>
-//using Vector = ManagedPtrRange<T>;
-
-//template<typename T>
-//using Matrix = ManagedMatrixPtrRange<T>;
-
-template<typename T>
-struct StaticVector : public ManagedPtrRange<T> {
+enum class BaseVectorType {
+    Resizeable, NonResizeable
+};
+template<typename T, BaseVectorType Type>
+struct BaseVector : public ManagedPtrRange<T> {
     T* allocEnd;
     constexpr size_t capacity() const { return allocEnd - this->first; }
-    StaticVector(size_t capacity, size_t sz)
+    BaseVector(size_t capacity, size_t sz)
         : ManagedPtrRange<T>(capacity) {
+        assert(capacity > 0, "can't have zero capacity");
         allocEnd = this->last;
         this->last = this->first+sz;
     }
-    StaticVector(size_t capacity) : StaticVector(capacity, 0) {}
+    explicit BaseVector(size_t capacity) : BaseVector(capacity, 0) {}
+    BaseVector() : ManagedPtrRange<T>(nullptr) {}
+    BaseVector(std::nullptr_t) : ManagedPtrRange<T>(nullptr), allocEnd(nullptr) {}
+    BaseVector(std::initializer_list<T> l) : ManagedPtrRange<T>(l), allocEnd(this->last) {}
 
     void push_back(const T& val) {
-        assert(this->last != allocEnd, "Overflow");
+        if constexpr (Type == BaseVectorType::Resizeable) {
+            if (this->first == nullptr) {
+                new (this) BaseVector<T, Type>(2);
+            }
+            else if (this->last >= allocEnd) {
+                //std::cerr << "RESIZING" << "\n";
+                size_t newCapacity = capacity() *2;
+                T* newData = new T[newCapacity];
+                size_t sz = this->size();
+                for (size_t i = 0; i < sz; ++i) {
+                    newData[i] = std::move(this->first[i]);
+                }
+                delete this->first;
+                this->first = newData;
+                this->last = newData + sz;
+                this->allocEnd = newData + newCapacity;
+            }
+        } else {
+            assert(this->last != allocEnd, "Overflow");
+        }
         *(this->last++) = val;
     }
+    constexpr bool empty() const {return this->size() == 0; }
     void insert(T* pos, const T& val) {
         assert(this->last != allocEnd, "Overflow");
         for (auto it = this->last-1; it != pos; --it)
@@ -220,5 +253,34 @@ struct StaticVector : public ManagedPtrRange<T> {
         for (auto it = pos; it != this->last; ++it)
             *it = *(it+1);
         --this->last;
+    }
+
+    void pop_front() { remove(this->first); }
+    T& front() { return *(this->first); }
+    const T& front() const { return *(this->first); }
+    T& back() { return *(this->last-1); }
+    const T& back() const { return *(this->last-1); }
+};
+
+template<typename T>
+using StaticVector = BaseVector<T, BaseVectorType::NonResizeable>;
+
+template<typename T>
+using Vector = BaseVector<T, BaseVectorType::Resizeable>;
+
+template<typename T>
+struct SimpleQueue {
+    T* first;
+    T* last;
+    constexpr void push(const T& val) {
+        *(last++) = val;
+    }
+
+    T pop() {
+        assert(first < last, "Queue empty");
+        return *(first++);
+    }
+    constexpr bool empty() const {
+        return first == last;
     }
 };

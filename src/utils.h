@@ -3,7 +3,8 @@
 #include <iostream>
 #include <fstream>
 
-constexpr size_t getSize(std::initializer_list<double> l) {
+template<typename T>
+constexpr size_t getSize(std::initializer_list<T> l) {
     size_t n = 0;
     auto it = l.begin();
     auto end = l.end();

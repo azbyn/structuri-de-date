@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "dirGraphMat.h"
+#include "ptrRange.h"
 #include "dirGraphAdjacencyList.h"
 
 #include <iostream>
@@ -32,22 +33,6 @@ void visitDepthFirst(const DirGraph_Mat& g) {
     std::cout << "\n";
 }
 
-template<typename T>
-struct SimpleQueue {
-    T* first;
-    T* last;
-    constexpr void push(const T& val) {
-        *(last++) = val;
-    }
-
-    T pop() {
-        assert(first < last, "Queue empty");
-        return *(first++);
-    }
-    constexpr bool empty() const {
-        return first == last;
-    }
-};
 
 void visitBreadthFirst(const DirGraph_AdjacencyList& g,
                        DirGraph_AdjacencyList::Vertex current,
