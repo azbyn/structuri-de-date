@@ -1,7 +1,7 @@
-FILE := lab10_*.cpp
+FILE := lab11_06_*.cpp
 CXX := clang++
 CXX_FLAGS := -std=c++17 -Wall -Wextra -g
-OUT = test
+OUT = a.out
 
 default: build
 

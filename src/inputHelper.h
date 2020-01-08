@@ -2,20 +2,25 @@
 #include "fixedPoint.h"
 #include <iostream>
 
+enum class Echo { No, Yes};
 class MultiInputHelper {
 public:
     std::string line;
     const char* p;
-
+    std::istream& s;
+    Echo echo = Echo::No;
 public:
-    MultiInputHelper() {}
-    void getLine(std::string_view msg = "") {
-        if (msg!=""){
+    MultiInputHelper(std::istream& s, Echo echo = Echo::Yes): s(s), echo(echo) {}
+    MultiInputHelper(): s(std::cin)  {}
+    bool getLine(std::string_view msg = "") {
+        if (msg!="") {
             std::cout << msg;
             if (msg.back() != ' ') std::cout << ": ";
         }
-        std::getline(std::cin, line);
+        if (!std::getline(s, line)) return false;
+        if (echo == Echo::Yes) std::cout << line << "\n";
         p = line.c_str();
+        return true;
     }
 
     void getLineAfterInvalid(std::string_view msg) {

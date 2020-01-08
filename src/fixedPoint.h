@@ -49,6 +49,9 @@ public:
     constexpr bool operator> (FP rhs) const { return val > rhs.val; }
     constexpr bool operator<=(FP rhs) const { return val <= rhs.val; }
     constexpr bool operator>=(FP rhs) const { return val >= rhs.val; }
+
+    constexpr bool operator==(FP rhs) const { return val == rhs.val; }
+    constexpr bool operator!=(FP rhs) const { return val != rhs.val; }
     constexpr size_t textLen(bool showSign = false) const {
         size_t baseline = 1 + decimals + showSign; // 1 for the dot
         if (val < 0) return make(-val).textLen(true);
