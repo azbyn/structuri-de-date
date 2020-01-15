@@ -78,30 +78,6 @@ public:
     }
 
     void add(const Key& key, const T& val) {
-        /*
-        if (root == nullptr) {
-            root = Node(key, val);
-            return;
-        }
-        Node* n = root;
-        for (;;) {
-            if (key < n->key) {
-                if (n->left) n = n->left;
-                else {
-                    n->left = Node(key, val);
-                    return;
-                }
-            } else if (key > n->key) {
-                if (n->right) n = n->right;
-                else {
-                    n->right = Node(key, val);
-                    return;
-                }
-            } else {
-                assert(0, "Value already in tree");
-            }
-        }
-        */
         auto res = findRef(key);
         assert(res.val == nullptr, "Value already in tree");
         add(res, key, val);

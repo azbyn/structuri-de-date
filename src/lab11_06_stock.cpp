@@ -129,7 +129,6 @@ int main(int argc, char* argv[]) {
         for (;;) {
             if (!eval(stock, fih)) break;
         }
-        
     }
     printHelp();
     MultiInputHelper ih;

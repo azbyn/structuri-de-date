@@ -106,7 +106,10 @@ struct ManagedPtrRange : public PtrRange<T> {
         T* it = this->first;
         for (auto& v: l) *it++ = v;
     }
-    ManagedPtrRange(const ManagedPtrRange&) = delete;
+    ManagedPtrRange(const ManagedPtrRange& rhs) : ManagedPtrRange(rhs.size()) {
+        T* it = this->first;
+        for (auto& v: rhs) *it++ = v;
+    }
     ManagedPtrRange(ManagedPtrRange&& rhs)
         : PtrRange<T>(std::exchange(rhs.first, nullptr),
                       std::exchange(rhs.last, nullptr)) {}
@@ -212,18 +215,24 @@ struct BaseVector : public ManagedPtrRange<T> {
         allocEnd = this->last;
         this->last = this->first+sz;
     }
+    BaseVector(const BaseVector& rhs) : BaseVector(rhs.capacity(), rhs.size()) {
+        T* it = this->first;
+        for (auto& v: rhs) *it++ = v;
+    }
+
     explicit BaseVector(size_t capacity) : BaseVector(capacity, 0) {}
     BaseVector() : ManagedPtrRange<T>(nullptr) {}
     BaseVector(std::nullptr_t) : ManagedPtrRange<T>(nullptr), allocEnd(nullptr) {}
     BaseVector(std::initializer_list<T> l) : ManagedPtrRange<T>(l), allocEnd(this->last) {}
 
     void push_back(const T& val) {
+        std::cerr << "PB" << this << "\n";
         if constexpr (Type == BaseVectorType::Resizeable) {
             if (this->first == nullptr) {
                 new (this) BaseVector<T, Type>(2);
             }
             else if (this->last >= allocEnd) {
-                //std::cerr << "RESIZING" << "\n";
+                std::cerr << "RS" << this << "\n";
                 size_t newCapacity = capacity() *2;
                 T* newData = new T[newCapacity];
                 size_t sz = this->size();
@@ -256,6 +265,10 @@ struct BaseVector : public ManagedPtrRange<T> {
     }
 
     void pop_front() { remove(this->first); }
+    void pop_back() {
+        assert(this->last != this->first, "Empty vector");
+        --this->last;
+    }
     T& front() { return *(this->first); }
     const T& front() const { return *(this->first); }
     T& back() { return *(this->last-1); }
