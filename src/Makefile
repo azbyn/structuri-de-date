@@ -1,4 +1,4 @@
-FILE := lab12_10_*.cpp
+FILE := main.cpp
 CXX := clang++
 CXX_FLAGS := -std=c++17 -Wall -Wextra -g
 OUT = a.out

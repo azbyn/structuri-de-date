@@ -1,0 +1,373 @@
+\documentclass[11pt,a4paper]{report}
+\usepackage{minted} %must be installed
+\usepackage{mathtools} % misc math 
+\usepackage{amssymb} % math symbols
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{enumitem} % for [leftmargin=*]
+\usepackage{geometry} % for better controll of margins
+
+\usepackage[romanian]{babel} %romanian names
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=cyan, citecolor=green, filecolor=black, urlcolor=blue}
+\newmintinline[code]{cpp}{}
+
+
+% \usepackage{tikz}
+% \usetikzlibrary{arrows}
+% \usepackage{hyperref}
+
+% \usepackage{sectsty}
+% \chaptertitlefont{\centering\LARGE}
+% \sectionfont{\Large}
+
+\geometry{a4paper,left=20mm,right=15mm,top=15mm,bottom=25mm}
+
+%\AtBeginEnviroment{enumerate}{}
+
+%\usepackage{datatool} %for putting files and outputs
+
+%\newcommand{\code}{\}
+\newminted[cpp]{cpp} {
+  linenos,
+  frame=single,
+  %breaklines,
+  %style=vs,
+  fontsize=\large,
+  escapeinside=@@
+}
+
+\newminted[py]{python} {
+  linenos,
+  frame=single,
+  %breaklines,
+  %style=vs,
+  fontsize=\large,
+  escapeinside=@@
+}
+
+\usepackage{xparse}
+
+\DeclareDocumentEnvironment{problema}{O {1} o}{
+  \begin{enumerate}[leftmargin=*]
+    \addtocounter{enumi}{#1}
+    \addtocounter{enumi}{-1}
+    \item
+}{
+  \end{enumerate}
+  \IfValueT{#2}{
+    \cppcode{#2}
+  }
+}
+
+
+\newcommand{\mat}[1]{\mathcal{M}_{#1}(\mathbb{R})}
+\newcommand{\matmn}{\mat{m\times{}n}}
+\newcommand{\matn}{\mat{n}}
+
+\usepackage{tocloft}
+\usepackage{tipa}
+
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+%\hypersetup{colorlinks=true, linkcolor=cyan, citecolor=green, filecolor=black,urlcolor=blue}
+
+\newcommand{\labtitle}[2]{
+  \chapter*{#1}
+  \addcontentsline{toc}{chapter}{#2}
+}
+\newcommand{\commonFile}[2]{
+  \subsection*{\texttt{#1}}
+  \label{#2}
+  \addcontentsline{toc}{section}{#1}
+  \cppcode{src/#1}
+}
+
+\title{Data Structures: How to pass 101}
+
+\begin{document}
+\section*{Grafuri (Graphs)}
+\subsection*{Reprezentări}
+\begin{itemize} \setlength{\itemsep}{-2pt}
+  \item Matrice de adiacență: \textipa{/d@:@/} %/dəː/
+  \item Liste de adiacență: \code{vector<Node> list[NodeCount];}
+  \item Lista muchiilor/arcelor: \code{vector<pair<Node, Node>> list;}
+\end{itemize}
+
+\subsection*{Grafuri neorientate (Undirected Graphs)}
+\begin{description}\setlength{\itemsep}{-2pt}
+  \item Noduri (Vertices); Muchii (Edges)
+  \item Graf complet (Complete Graph): toate muchiile adiacente
+  \item Graf partial (partial?): ștergem muchii
+  \item Subgraf (Subgraph): ștergem noduri
+  \item Lanț (Walk / Chain): adiacente 2 cate 2
+  \item Lanț elementar (Trail): lanț cu noduri distincte
+  \item Ciclu (Cycle): lant cu primu' = ultimu'
+  \item Ciclu elementar (elementary?): You get the point
+  \item Graf aciclic (Acyclic): natürlich
+  \item Conex (Connected): $\forall\,v, w\  \exists\,$lanț
+  \item Componenta conexă (Connected component): subgraf maximal (aka tătî bucata)
+  \item Lanț eulerian (Eulerian Path/ just `Path'): lanț care vizitează fiecare muchie o singura dată
+  \item Ciclu eulerian (Eulerian cycle/circuit): możesz to rozgryźć
+  \item Graf eulerian (Eulerian Graph): Graf cu ciclu eulerian
+  \item Bipartit (Bipartite): putem împarți nodurile în 2 partiții, în care 2 noduri din aceeași partiție nu sunt adiacente
+  \item Lanț hamiltonian (Hamiltonian path): lanț elementar cu toate nodurile
+  \item Ciclu hamiltonian (Hamiltonian cycle): duh
+\end{description}
+
+\subsection*{Grafuri orientate (Directed Graphs)}
+\begin{description}\setlength{\itemsep}{-2pt}
+  \item Vârfuri (Vertices); Arce (Edges/arc)
+  \item Grad interior: câte intră
+  \item Grad exterior: câte ies
+  \item Drum (Directed Walk): "lanț"
+  \item Graph Turneu (Tour): intre oricare 2 varfuri distincte exista un arc
+  \item Slab Conex (Weakly connected): daca-l transformam în neorientat, e conex
+  \item Tare Conex (Strongly connected): există drum intre oricare 2 varfuri, dus-intors
+  \item Modalitati de parcurgere: Breadth first, Depth first
+\end{description}
+\subsection*{Grafuri ponderate (Weighted Graphs)}
+\subsubsection*{Dijkstra}
+\begin{py}
+function Dijkstra(Graph, source):
+    create vertex set Q
+    for each vertex v in Graph:             
+        dist[v] = INFINITY                  
+        prev[v] = UNDEFINED                 
+        add v to Q                      
+    dist[source] = 0                        
+    
+    while Q is not empty:
+        u = vertex in Q with min dist[u]    
+        remove u from Q 
+        for each neighbor v of u:           # only v that are still in Q
+            alt = dist[u] + length(u, v)
+            if alt < dist[v]:               
+                dist[v] = alt 
+                prev[v] = u 
+
+    return dist[], prev[]
+\end{py}
+\subsubsection*{Roy-Floyd}
+\begin{py}
+let dist be a @$|V| \times |V|$@ array of minimum distances initialized to @$\infty$@
+let next be a @$|V| \times |V|$@ array of vertex indices initialized to null
+
+procedure FloydWarshallWithPathReconstruction():
+    for each edge (u, v) do
+        dist[u][v] = w(u, v) # The weight of the edge (u, v)
+        next[u][v] = v
+    for each vertex v do
+        dist[v][v] = 0
+        next[v][v] = v
+    for k from 1 to |V| do # standard Floyd-Warshall implementation
+        for i from 1 to |V|
+            for j from 1 to |V|
+                if dist[i][j] > dist[i][k] + dist[k][j] then
+                    dist[i][j] = dist[i][k] + dist[k][j]
+                    next[i][j] = next[i][k]
+
+procedure Path(u, v)
+    if next[u][v] @$=$@ null then
+        return []
+    path = [u]
+    while u @$\neq$@  v
+        u = next[u][v]
+        path.append(u)
+    return path
+  \end{py}
+\section*{Arbori (Trees)}
+\begin{description}\setlength{\itemsep}{-2pt}
+  \item Subarbori (Subtree): fii
+  \item Nivelul unui nod (Level): distanta pana la radacina
+  \item Inaltimea unui nod (Height): cel mai lung lant pana la un nod terminal
+  \item Arbore partial al unui graf: graf partial care este arbore
+  \item Arbore partial de cost minim (minimum-spanning-tree): avem o functie $f$ care determina costul fiecarei muchii, gasim un arbore partial aî suma costurilor sale sa fie minima.
+  \end{description}
+  
+\subsection*{Reprezentări}
+\begin{itemize} \setlength{\itemsep}{-2pt}
+  \item like a graph: \textipa{/d@:@/} %/dəː/
+  \item Ref descendente: \code{struct Node { int data; Vector<Node*> children; };}
+  \item Ref ascendente: \code{int parinte[NodeCount] = {-1, ...};}
+\end{itemize}
+\subsection*{Kruskal}
+\begin{py}
+algorithm Kruskal(G) is
+A := @$\varnothing$@
+for each v @$\in$@ G.V do
+    MAKE-SET(v)
+for each (u, v) in G.E ordered by weight(u, v), increasing do
+    if FIND-SET(u) @$\neq$@ FIND-SET(v) then
+       A := A @$\cup$@ {(u, v)}
+       UNION(FIND-SET(u), FIND-SET(v))
+return A
+\end{py}
+\subsection*{Prim}
+\begin{cpp}
+void prim(double mat[sz][sz], ssize_t len) {
+    int* s = new int[len] {-1}, j;
+    for (int i = 1; i < len; ++i) s[i] = 0;
+    for (int k = 1; k < len; ++k) {
+        double min = inf;
+        for (int i = 0; i < len; ++i)
+            if (s[i] != -1 && min > mat[i][s[i]]) {
+                min = mat[i][s[i]];
+                j = i;
+            }
+        std::cout << "edge: " << j << "-" << s[j] << "\n";
+        for (int i = 0; i < len; ++i)
+            if (s[i] != -1 && mat[i][s[i]] > mat[i][j])
+                s[i] = j;
+        s[j] = -1;
+    }
+}
+\end{cpp}
+\subsection*{Arbori binari (Binary Tree)}
+
+\begin{description}\setlength{\itemsep}{-2pt}
+\item Arbori binari completi (Perfect binary tree): pe fiecare nivel $s$ are exact $2^s$ noduri
+\item Aproape complet (Complete binary tree): pe ultimul nivel lipsesc doar primele din stanga/ ultimele din dreapta
+
+\item Ansamblul Heap binar minim (Min-heap): Arbore aproape complet cu cheia oricarui parinte mai mica sau egala cu a fiului
+%TODO: add heap deleet and add
+\item Heap sort: stergem si punem intr-un vector
+
+\item Coada de priorități (Priority queue): tl;dr a fancy heap
+\end{description}
+\subsection*{AVL Trees}
+\begin{cpp}
+struct Node {
+    Key key;
+    Node *left, *right;
+    int h = 1;
+    static int height(const Node* p) { return (p == nullptr) ? 0 : p->h; }
+    void updateHeight() { h = std::max(height(left), height(right)) + 1; }
+    int balanceFactor() const { return height(left) - height(right); }
+    static void rightRotate(Node*& n) {
+        Node* t = n->left;
+        n->left = t->right;
+        t->right = n;
+        n->updateHeight();
+        t->updateHeight();
+        n = t;
+    }
+    static void leftRotate(Node*& n) { /* like above but swap right and left*/ }
+    static void balance(Node*& node) {
+        node->updateHeight();
+        int factor = node->balanceFactor();
+        if (factor > 1) {
+            if (node->left->balanceFactor() < 0) leftRotate(node->left);
+            rightRotate(node);
+        } else if (factor < -1) {
+            if (node->right->balanceFactor() > 0) rightRotate(node->right);
+            leftRotate(node);
+        }
+    }
+    static void add(Node*& node, const Key& key) {
+        if (node == nullptr) { node = new Node(key); return; }
+        assert(key != node->key, "Value already in tree");
+        if (key < node->key) add(node->left, key);
+        else if (key > node->key) add(node->right, key);
+        balance(node);
+    }
+
+    static void remove(Node*& n, const Key& key) {
+        if (n == nullptr) { printf("not found?\n"); return; }
+        if (key < n->key) remove(n->left, key);
+        else if (key > n->key) remove(n->right, key);
+        else { // key == n->key
+            if (n->left == nullptr) {
+                if (n->right == nullptr) { n = nullptr; return; }
+                Node* tmp = n;
+                n = n->right;
+                tmp->right = nullptr;
+                delete tmp;
+            } else if (n->right == nullptr) {
+                Node* tmp = n;
+                n = n->left;
+                tmp->left = nullptr;
+                delete tmp;
+            } else {
+                constexpr auto findMax = [](Node*& r, auto& findMax) -> Node*& {
+                        if (r->right == nullptr) return r;
+                        return findMax(r->right, findMax);
+                    };
+                Node*& tmp = findMax(n->left, findMax);
+                n->key = tmp->key;
+                remove(n->left, tmp->key);
+            }
+        }
+        if (n == nullptr) return;
+        balance(n);
+    }
+};
+\end{cpp}
+
+\subsection*{Binary heap}
+\begin{cpp}
+Vector<Val> data;
+constexpr static int parent(int i) { return (i - 1) / 2; }
+constexpr static int left(int i) { return (2 * i + 1); }
+constexpr static int right(int i) { return (2 * i + 2); }
+constexpr bool empty() const { return data.empty(); }
+void push(const val& v) {
+    data.push_back(v);
+    for (size_t i = data.size()-1; ;) {
+        if (i == 0) break;
+        size_t j = parent(i);
+        if (data[i] > data[j]) {
+            std::swap(data[i], data[j]);
+            i = j;
+        }
+    }
+}
+val pop() {
+    val res = std::move(data[0]);
+    data[0] = data.back();
+    data.pop_back();
+    size_t i = 0;
+    size_t sz = data.size();
+    while (i < sz) {
+        size_t j = left(i);
+        if (j < sz) {
+            if (j+1 < sz && data[j+1] > data[j]) ++j;
+            if (data[i] < data[j]) {
+                std::swap(data[i], data[j]);
+                i = j;
+            } else break;
+        } else break;
+    }
+    return res;
+}
+\end{cpp}
+\subsection*{Tablele de dispersie (Hash tables)}
+functii: $h(k) = k \mod m $; \quad \quad
+$h(k) = \lfloor m(k \varphi - [k\varphi]) \rfloor,\quad \varphi = \frac{\sqrt{5} - 1}{2}$\\
+Or: do it again: $h(k, i) = h_1(k)+i \mod m$; \quad \quad
+$h(k, i) = h_1(k)+c_1 i + c_2 i^2 \mod m$
+\end{document}
+kinda todo:
+
+Neorientate:
+ grafuri cu mat, liste de adiacenta, lista muchiilor
+
+Grafuri orientate:
+grafuri cu mat, liste de adiacenta, lista arcelor
+parcurgere bfs, dfs
+
+Ponderate: implement stuff
+
+Arbori:
+
+Ref descendente, ref ascendente
+Arbori partiali de cost minim
+
+Arbori binari:
+Inordine...
+Modalitati de reprezentare
+Binary search trees
+AVL trees
+
+Tabele de dispertsie (Hash table):
