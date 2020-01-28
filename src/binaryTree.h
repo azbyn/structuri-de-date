@@ -101,7 +101,7 @@ public:
                               };
         return impl(root, impl);
     }
-    constexpr void remove(NodeRef r) {
+  constexpr void remove(NodeRef r) {
         assert(r.val != nullptr, "Node not found");
         Node*& n = r.val;
         if (n->left == nullptr) {

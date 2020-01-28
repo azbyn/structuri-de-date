@@ -312,7 +312,7 @@ constexpr static int parent(int i) { return (i - 1) / 2; }
 constexpr static int left(int i) { return (2 * i + 1); }
 constexpr static int right(int i) { return (2 * i + 2); }
 constexpr bool empty() const { return data.empty(); }
-void push(const val& v) {
+void push(const Val& v) {
     data.push_back(v);
     for (size_t i = data.size()-1; ;) {
         if (i == 0) break;
@@ -323,8 +323,8 @@ void push(const val& v) {
         }
     }
 }
-val pop() {
-    val res = std::move(data[0]);
+Val pop() {
+    Val res = std::move(data[0]);
     data[0] = data.back();
     data.pop_back();
     size_t i = 0;
@@ -347,6 +347,58 @@ functii: $h(k) = k \mod m $; \quad \quad
 $h(k) = \lfloor m(k \varphi - [k\varphi]) \rfloor,\quad \varphi = \frac{\sqrt{5} - 1}{2}$\\
 Or: do it again: $h(k, i) = h_1(k)+i \mod m$; \quad \quad
 $h(k, i) = h_1(k)+c_1 i + c_2 i^2 \mod m$
+\subsection*{Binary search trees}
+\begin{cpp}
+void insert(Node*& root, int key, int value) {
+  if (!root) 
+    root = new Node(key, value);
+  else if (key == root->key)
+    root->value = value;
+  else if (key < root->key)
+    insert(root->left, key, value);
+  else  // key > root->key
+    insert(root->right, key, value);
+  }
+constexpr NodeRef findRef(const Key& key) {
+    auto impl = [&key] (Node*& t, auto& impl) {
+                    if (t == nullptr || key == t->key) return NodeRef { t};
+                    if (key < t->key) return impl(t->left, impl);
+                    return impl(t->right, impl);
+                };
+    return impl(root, impl);
+}
+
+constexpr void remove(NodeRef r) {
+    assert(r.val != nullptr, "Node not found");
+    Node*& n = r.val;
+    if (n->left == nullptr) {
+        if (n->right == nullptr) { n = nullptr; return; }
+        Node* tmp = n;
+        n = n->right;
+        tmp->right = nullptr;
+        delete tmp;
+    } else if (n->right == nullptr) {
+        Node* tmp = n;
+        n = n->left;
+        tmp->left = nullptr;
+        delete tmp;
+    } else {
+        constexpr auto findMax = [] (Node*& r, auto& findMax) -> Node*& {
+                           if (r->right == nullptr) return r;
+                           return findMax(r->right, findMax);
+                       };
+        Node*& replacement = findMax(n->left, findMax);
+        Node* tmp = replacement;
+        std::swap(replacement->key, n->key);
+        std::swap(replacement->val, n->val);
+        replacement = replacement->left;
+        tmp->right = tmp->left = nullptr;
+        delete tmp;
+    }
+}
+constexpr void remove(const Key& key) { remove(findRef(key)); }
+
+\end{cpp}
 \end{document}
 kinda todo:
 
