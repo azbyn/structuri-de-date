@@ -1,0 +1,58 @@
+\documentclass[11pt,a4paper]{report}
+\usepackage{minted} %must be installed
+\usepackage{mathtools} % misc math 
+\usepackage{amssymb} % math symbols
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{enumitem} % for [leftmargin=*]
+\usepackage{geometry} % for better controll of margins
+
+\usepackage[romanian]{babel} %romanian names
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=cyan, citecolor=green, filecolor=black, urlcolor=blue}
+\newmintinline[code]{cpp}{}
+
+\geometry{a4paper,left=20mm,right=15mm,top=15mm,bottom=25mm}
+
+\newminted[cpp]{cpp} {
+  linenos,
+  frame=single,
+  %breaklines,
+  %style=vs,
+  fontsize=\large,
+  escapeinside=@@
+}
+
+\newminted[bash]{bash} {
+  linenos,
+  frame=single,
+  %breaklines,
+  %style=vs,
+  fontsize=\large,
+  escapeinside=@@
+}
+\newminted[py]{python} {
+  linenos,
+  frame=single,
+  %breaklines,
+  %style=vs,
+  fontsize=\large,
+  escapeinside=@@
+}
+
+\usepackage{xparse}
+
+\newcommand{\mat}[1]{\mathcal{M}_{#1}(\mathbb{R})}
+\newcommand{\matmn}{\mat{m\times{}n}}
+\newcommand{\matn}{\mat{n}}
+
+%\usepackage{tocloft}
+%\usepackage{tipa}
+
+\title{Data Structures: How to pass 101}
+
+\begin{document}
+miał
+\end{document}
