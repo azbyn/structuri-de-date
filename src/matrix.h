@@ -58,7 +58,7 @@ struct Mat {
     const double* end() const { return data + m*n; }
 
     void setSize(int m, int n) {
-        if (this->m == m && this->m == n) return;
+        if (this->m == m && this->n == n) return;
         this->~Mat();
         new (this) Mat(m, n);
     }
